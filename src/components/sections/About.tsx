@@ -42,7 +42,7 @@ const About: React.FC = () => {
             <div className="relative w-48 h-48 md:w-64 md:h-64 mx-auto">
               <div className="w-full h-full rounded-full overflow-hidden border-2 border-aura-silver">
                 <img 
-                  src="https://images.pexels.com/photos/2379005/pexels-photo-2379005.jpeg" 
+                  src="public/images/Untitled design (46).png" 
                   alt="Karthik Barma, Founder" 
                   className="w-full h-full object-cover"
                 />
