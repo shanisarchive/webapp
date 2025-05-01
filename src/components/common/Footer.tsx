@@ -51,7 +51,7 @@ const Footer: React.FC = () => {
                 </a>
               </div>
               <div className="text-aura-silver">
-                Email: <a href="mailto:team@auracorp.co" className="hover:text-aura-white transition-colors">team@auracorp.co</a>
+                Email: <a href="mailto:founder@auracorp.co" className="hover:text-aura-white transition-colors">team@auracorp.co</a>
               </div>
             </div>
           </div>
