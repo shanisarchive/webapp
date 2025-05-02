@@ -25,10 +25,10 @@ const Splash: React.FC<SplashProps> = ({ onEnter }) => {
 
     ctx.clearRect(0, 0, width, height);
     ctx.fillStyle = '#ccc';
-    ctx.font = '600 64px "Open Sans", "Helvetica Neue", sans-serif';
+    ctx.font = '600 64px system-ui, -apple-system, BlinkMacSystemFont, sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText(text, width / 2, height / 2 + 5); // fine-tuned vertical position
+    ctx.fillText(text, width / 2, height / 2);
 
     const imageData = ctx.getImageData(0, 0, width, height);
     const particles: any[] = [];
@@ -46,7 +46,7 @@ const Splash: React.FC<SplashProps> = ({ onEnter }) => {
             vx: 0,
             vy: 0,
             alpha: 1,
-            delay: x / width * 100,
+            delay: (x - width / 2 + 200) / width * 100, // wipe to right starting near center
           });
         }
       }
@@ -58,22 +58,24 @@ const Splash: React.FC<SplashProps> = ({ onEnter }) => {
       ctx.clearRect(0, 0, width, height);
       for (let p of particles) {
         if (frame > p.delay) {
-          p.vx += (Math.random() - 0.5) * 0.5;
-          p.vy -= Math.random() * 0.3;
+          p.vx += Math.random() * 0.5 + 0.8; // clean swipe right
+          p.vy += (Math.random() - 0.5) * 0.4;
           p.x += p.vx;
           p.y += p.vy;
-          p.alpha -= 0.008;
+          p.alpha -= 0.01;
         }
         if (p.alpha > 0) {
           ctx.fillStyle = `rgba(200, 200, 200, ${p.alpha})`;
-          ctx.fillRect(p.x, p.y, 1.2, 1.2);
+          ctx.fillRect(p.x, p.y, 1.5, 1.5);
         }
       }
-      if (frame < 300) requestAnimationFrame(animate);
+      if (frame < 220) requestAnimationFrame(animate);
       else onEnter();
     };
 
-    animate();
+    setTimeout(() => {
+      animate();
+    }, 1200); // delay wipe trigger
   }, [onEnter]);
 
   return (
