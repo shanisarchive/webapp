@@ -59,13 +59,20 @@ const Splash: React.FC<SplashProps> = ({ onEnter }) => {
         ))}
       </div>
 
-      {/* Welcome Text */}
+      {/* Welcome Text with Titanium/Gas Fade Effect */}
       {phase === 'welcome' && (
         <motion.h1
-          className="text-4xl md:text-6xl font-bold text-center z-10 text-transparent bg-clip-text bg-gradient-to-r from-[#B0B0B0] via-[#FFFFFF] to-[#B0B0B0] animate-pulse"
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1.2, ease: 'easeInOut' }}
+          className="text-4xl md:text-6xl font-bold text-center z-10 text-transparent bg-clip-text bg-gradient-to-r from-[#AAAAAA] via-[#FFFFFF] to-[#AAAAAA]"
+          initial={{ opacity: 0, scale: 0.95, filter: 'blur(8px)' }}
+          animate={{
+            opacity: [0, 1, 1, 0],
+            scale: [0.95, 1, 1, 1.1],
+            filter: ['blur(8px)', 'blur(2px)', 'blur(0px)', 'blur(12px)'],
+          }}
+          transition={{
+            duration: 3.5,
+            ease: 'easeInOut'
+          }}
         >
           Welcome to the world of Aura
         </motion.h1>
