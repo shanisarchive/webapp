@@ -14,29 +14,39 @@ const Splash: React.FC<SplashProps> = ({ onEnter }) => {
     if (!ctx) return;
 
     const text = 'Welcome to the world of Aura';
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    const dpi = window.devicePixelRatio || 1;
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    canvas.width = width * dpi;
+    canvas.height = height * dpi;
+    canvas.style.width = `${width}px`;
+    canvas.style.height = `${height}px`;
+    ctx.scale(dpi, dpi);
 
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, width, height);
     ctx.fillStyle = '#ccc';
     ctx.font = 'bold 48px sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText(text, canvas.width / 2, canvas.height / 2);
+    ctx.textBaseline = 'middle';
+    ctx.fillText(text, width / 2, height / 2);
 
-    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const imageData = ctx.getImageData(0, 0, width, height);
     const particles: any[] = [];
 
-    for (let y = 0; y < canvas.height; y += 4) {
-      for (let x = 0; x < canvas.width; x += 4) {
-        const i = (y * canvas.width + x) * 4;
+    for (let y = 0; y < height; y += 2) {
+      for (let x = 0; x < width; x += 2) {
+        const i = (y * width + x) * 4;
         const alpha = imageData.data[i + 3];
         if (alpha > 128) {
           particles.push({
             x,
             y,
-            vx: (Math.random() - 0.5) * 6,
-            vy: Math.random() * -5 - 1,
-            life: 0
+            originalX: x,
+            originalY: y,
+            vx: 0,
+            vy: 0,
+            alpha: 1,
+            delay: x / width * 100, // progressive dissolve from left to right
           });
         }
       }
@@ -45,20 +55,21 @@ const Splash: React.FC<SplashProps> = ({ onEnter }) => {
     let frame = 0;
     const animate = () => {
       frame++;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.clearRect(0, 0, width, height);
       for (let p of particles) {
-        p.x += p.vx;
-        p.y += p.vy;
-        p.vy += 0.05;
-        p.life++;
-        if (p.life < 90) {
-          ctx.fillStyle = `rgba(200,200,200,${1 - p.life / 90})`;
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, 1.2, 0, 2 * Math.PI);
-          ctx.fill();
+        if (frame > p.delay) {
+          p.vx += (Math.random() - 0.5) * 0.5;
+          p.vy -= Math.random() * 0.3;
+          p.x += p.vx;
+          p.y += p.vy;
+          p.alpha -= 0.008;
+        }
+        if (p.alpha > 0) {
+          ctx.fillStyle = `rgba(200, 200, 200, ${p.alpha})`;
+          ctx.fillRect(p.x, p.y, 1.5, 1.5);
         }
       }
-      if (frame < 120) requestAnimationFrame(animate);
+      if (frame < 300) requestAnimationFrame(animate);
       else onEnter();
     };
 
@@ -67,7 +78,7 @@ const Splash: React.FC<SplashProps> = ({ onEnter }) => {
 
   return (
     <div className="fixed inset-0 bg-black z-50 flex items-center justify-center overflow-hidden">
-      <canvas ref={canvasRef} className="absolute w-full h-full" />
+      <canvas ref={canvasRef} className="absolute inset-0" />
     </div>
   );
 };
