@@ -115,7 +115,7 @@ const About: React.FC = () => {
             >
               <div className="relative w-full h-full group">
                 <img 
-                  src="/images/karthik.jpg" 
+                  src="/images/Untitled%20design%20(46).png" 
                   alt="Karthik Barma"
                   className="w-full h-full object-cover filter contrast-125"
                 />
