@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { motion, useAnimation } from 'framer-motion';
-import Logo from '../common/Logo';
 
 interface SplashProps {
   onEnter: () => void;
@@ -8,15 +7,24 @@ interface SplashProps {
 
 const Splash: React.FC<SplashProps> = ({ onEnter }) => {
   const controls = useAnimation();
-  const [showEnter, setShowEnter] = useState(false);
+  const [phase, setPhase] = useState<'bluu' | 'welcome' | 'done'>('bluu');
 
   useEffect(() => {
     const sequence = async () => {
-      await controls.start({ scale: [0.6, 1.2, 1], opacity: [0, 1], transition: { duration: 1.8, ease: 'easeInOut' } });
-      setTimeout(() => setShowEnter(true), 2000);
+      await controls.start({ scale: [0.8, 1.1, 1], opacity: [0, 1], transition: { duration: 1.5 } });
+      await new Promise(res => setTimeout(res, 2000));
+      await controls.start({ opacity: 0, scale: 0.5, transition: { duration: 1 } });
+      setPhase('welcome');
+
+      await new Promise(res => setTimeout(res, 400));
+      setTimeout(() => {
+        setPhase('done');
+        onEnter();
+      }, 3000);
     };
+
     sequence();
-  }, [controls]);
+  }, [controls, onEnter]);
 
   return (
     <motion.div
@@ -26,16 +34,16 @@ const Splash: React.FC<SplashProps> = ({ onEnter }) => {
       exit={{ opacity: 0 }}
       transition={{ duration: 1 }}
     >
-      {/* Particle Nexus Simulation */}
-      <div className="absolute inset-0 flex items-center justify-center">
-        {[...Array(80)].map((_, i) => (
+      {/* Immersive Particle Field */}
+      <div className="absolute inset-0 -z-10">
+        {[...Array(120)].map((_, i) => (
           <motion.div
             key={i}
-            className="absolute w-[2px] h-[2px] bg-white/40 rounded-full"
+            className="absolute w-[2px] h-[2px] bg-white/20 rounded-full"
             initial={{
               opacity: 0,
-              x: (Math.random() - 0.5) * 800,
-              y: (Math.random() - 0.5) * 800,
+              x: (Math.random() - 0.5) * window.innerWidth,
+              y: (Math.random() - 0.5) * window.innerHeight,
               scale: 0.5 + Math.random()
             }}
             animate={{
@@ -44,31 +52,41 @@ const Splash: React.FC<SplashProps> = ({ onEnter }) => {
               opacity: 1,
               scale: 1,
               transition: {
-                delay: 0.1 + Math.random() * 1.5,
-                duration: 1.5,
+                delay: Math.random() * 1.5,
+                duration: 2,
                 ease: 'easeOut'
               }
+            }}
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              filter: 'blur(0.5px)'
             }}
           />
         ))}
       </div>
 
-      {/* Logo at center */}
-      <motion.div animate={controls} className="relative z-10">
-        <Logo size="xl" animate={true} />
-      </motion.div>
+      {/* Bluu Character */}
+      {phase === 'bluu' && (
+        <motion.img
+          src="/images/bluu.png"
+          alt="Bluu character"
+          animate={controls}
+          initial={{ opacity: 0, scale: 0.5 }}
+          className="w-64 h-64 z-10"
+        />
+      )}
 
-      {/* Enter Button */}
-      {showEnter && (
-        <motion.button
-          onClick={onEnter}
-          className="absolute bottom-16 px-6 py-3 border border-white/30 text-white bg-white/5 hover:bg-white/10 backdrop-blur rounded-full text-lg transition"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.5 }}
+      {/* Welcome Text */}
+      {phase === 'welcome' && (
+        <motion.h1
+          className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-gray-300 via-white to-gray-300 text-transparent bg-clip-text z-10"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1.2, ease: 'easeInOut' }}
         >
-          Enter
-        </motion.button>
+          Welcome to the world of Aura
+        </motion.h1>
       )}
     </motion.div>
   );
