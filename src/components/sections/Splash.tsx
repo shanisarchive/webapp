@@ -1,35 +1,23 @@
 import React, { useEffect, useState } from 'react';
-import { motion, useAnimation } from 'framer-motion';
+import { motion } from 'framer-motion';
 
 interface SplashProps {
   onEnter: () => void;
 }
 
 const Splash: React.FC<SplashProps> = ({ onEnter }) => {
-  const controls = useAnimation();
-  const [phase, setPhase] = useState<'bluu' | 'welcome' | 'done'>('bluu');
+  const [phase, setPhase] = useState<'particles' | 'welcome' | 'done'>('particles');
 
   useEffect(() => {
     const sequence = async () => {
-      await controls.start({
-        scale: [0.6, 1.2, 1],
-        opacity: [0, 1],
-        rotate: [0, 5, -5, 0],
-        transition: { duration: 2.5, ease: 'easeInOut' }
-      });
-      await new Promise(res => setTimeout(res, 2500));
-      await controls.start({ opacity: 0, scale: 0.4, transition: { duration: 1 } });
+      await new Promise(res => setTimeout(res, 2000));
       setPhase('welcome');
-
-      await new Promise(res => setTimeout(res, 500));
-      setTimeout(() => {
-        setPhase('done');
-        onEnter();
-      }, 3000);
+      await new Promise(res => setTimeout(res, 3000));
+      setPhase('done');
+      onEnter();
     };
-
     sequence();
-  }, [controls, onEnter]);
+  }, [onEnter]);
 
   return (
     <motion.div
@@ -39,22 +27,22 @@ const Splash: React.FC<SplashProps> = ({ onEnter }) => {
       exit={{ opacity: 0 }}
       transition={{ duration: 1 }}
     >
-      {/* Immersive Particle Field */}
+      {/* Full-screen Particle Field */}
       <div className="absolute inset-0 -z-10">
-        {[...Array(150)].map((_, i) => (
+        {[...Array(200)].map((_, i) => (
           <motion.div
             key={i}
             className="absolute w-[1px] h-[1px] bg-white/10 rounded-full"
             initial={{
               opacity: 0,
-              x: `${(Math.random() - 0.5) * 200}vw`,
-              y: `${(Math.random() - 0.5) * 200}vh`,
+              x: `${(Math.random() - 0.5) * 300}vw`,
+              y: `${(Math.random() - 0.5) * 300}vh`,
               scale: 0.4 + Math.random() * 0.8
             }}
             animate={{
               x: 0,
               y: 0,
-              opacity: 0.6,
+              opacity: 0.5,
               scale: 1,
               transition: {
                 delay: Math.random() * 1.5,
@@ -70,17 +58,6 @@ const Splash: React.FC<SplashProps> = ({ onEnter }) => {
           />
         ))}
       </div>
-
-      {/* Bluu Character */}
-      {phase === 'bluu' && (
-        <motion.img
-          src="/images/bluu.png"
-          alt="Bluu character"
-          animate={controls}
-          initial={{ opacity: 0, scale: 0.5 }}
-          className="h-72 w-auto z-10 drop-shadow-[0_0_35px_rgba(0,255,255,0.4)]"
-        />
-      )}
 
       {/* Welcome Text */}
       {phase === 'welcome' && (
