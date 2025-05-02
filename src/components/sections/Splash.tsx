@@ -11,12 +11,17 @@ const Splash: React.FC<SplashProps> = ({ onEnter }) => {
 
   useEffect(() => {
     const sequence = async () => {
-      await controls.start({ scale: [0.8, 1.1, 1], opacity: [0, 1], transition: { duration: 1.5 } });
-      await new Promise(res => setTimeout(res, 2000));
-      await controls.start({ opacity: 0, scale: 0.5, transition: { duration: 1 } });
+      await controls.start({
+        scale: [0.6, 1.2, 1],
+        opacity: [0, 1],
+        rotate: [0, 5, -5, 0],
+        transition: { duration: 2.5, ease: 'easeInOut' }
+      });
+      await new Promise(res => setTimeout(res, 2500));
+      await controls.start({ opacity: 0, scale: 0.4, transition: { duration: 1 } });
       setPhase('welcome');
 
-      await new Promise(res => setTimeout(res, 400));
+      await new Promise(res => setTimeout(res, 500));
       setTimeout(() => {
         setPhase('done');
         onEnter();
@@ -36,10 +41,10 @@ const Splash: React.FC<SplashProps> = ({ onEnter }) => {
     >
       {/* Immersive Particle Field */}
       <div className="absolute inset-0 -z-10">
-        {[...Array(120)].map((_, i) => (
+        {[...Array(200)].map((_, i) => (
           <motion.div
             key={i}
-            className="absolute w-[2px] h-[2px] bg-white/20 rounded-full"
+            className="absolute w-[1.5px] h-[1.5px] bg-white/10 rounded-full"
             initial={{
               opacity: 0,
               x: (Math.random() - 0.5) * window.innerWidth,
@@ -49,7 +54,7 @@ const Splash: React.FC<SplashProps> = ({ onEnter }) => {
             animate={{
               x: 0,
               y: 0,
-              opacity: 1,
+              opacity: 0.6,
               scale: 1,
               transition: {
                 delay: Math.random() * 1.5,
@@ -73,14 +78,14 @@ const Splash: React.FC<SplashProps> = ({ onEnter }) => {
           alt="Bluu character"
           animate={controls}
           initial={{ opacity: 0, scale: 0.5 }}
-          className="w-64 h-64 z-10"
+          className="w-64 h-64 z-10 drop-shadow-[0_0_20px_rgba(0,255,255,0.5)]"
         />
       )}
 
       {/* Welcome Text */}
       {phase === 'welcome' && (
         <motion.h1
-          className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-gray-300 via-white to-gray-300 text-transparent bg-clip-text z-10"
+          className="text-4xl md:text-6xl font-bold text-center z-10 text-transparent bg-clip-text bg-gradient-to-r from-[#B0B0B0] via-[#FFFFFF] to-[#B0B0B0] animate-pulse"
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1.2, ease: 'easeInOut' }}
