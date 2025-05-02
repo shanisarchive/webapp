@@ -41,15 +41,15 @@ const Splash: React.FC<SplashProps> = ({ onEnter }) => {
     >
       {/* Immersive Particle Field */}
       <div className="absolute inset-0 -z-10">
-        {[...Array(200)].map((_, i) => (
+        {[...Array(150)].map((_, i) => (
           <motion.div
             key={i}
-            className="absolute w-[1.5px] h-[1.5px] bg-white/10 rounded-full"
+            className="absolute w-[1px] h-[1px] bg-white/10 rounded-full"
             initial={{
               opacity: 0,
-              x: (Math.random() - 0.5) * window.innerWidth,
-              y: (Math.random() - 0.5) * window.innerHeight,
-              scale: 0.5 + Math.random()
+              x: `${(Math.random() - 0.5) * 200}vw`,
+              y: `${(Math.random() - 0.5) * 200}vh`,
+              scale: 0.4 + Math.random() * 0.8
             }}
             animate={{
               x: 0,
@@ -58,14 +58,14 @@ const Splash: React.FC<SplashProps> = ({ onEnter }) => {
               scale: 1,
               transition: {
                 delay: Math.random() * 1.5,
-                duration: 2,
+                duration: 2.5,
                 ease: 'easeOut'
               }
             }}
             style={{
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
-              filter: 'blur(0.5px)'
+              filter: 'blur(0.3px)'
             }}
           />
         ))}
@@ -78,7 +78,7 @@ const Splash: React.FC<SplashProps> = ({ onEnter }) => {
           alt="Bluu character"
           animate={controls}
           initial={{ opacity: 0, scale: 0.5 }}
-          className="w-64 h-64 z-10 drop-shadow-[0_0_20px_rgba(0,255,255,0.5)]"
+          className="h-72 w-auto z-10 drop-shadow-[0_0_35px_rgba(0,255,255,0.4)]"
         />
       )}
 
