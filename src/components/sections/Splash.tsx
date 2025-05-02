@@ -23,56 +23,49 @@ const Splash: React.FC<SplashProps> = ({ onEnter }) => {
     canvas.style.height = `${height}px`;
     ctx.scale(dpi, dpi);
 
-    // Starfield — minimal glow and motion
-    const stars = Array.from({ length: 220 }, () => ({
-      x: Math.random() * width,
-      y: Math.random() * height,
-      r: Math.random() * 0.8 + 0.2,
-      dx: (Math.random() - 0.5) * 0.02,
-      dy: (Math.random() - 0.5) * 0.02,
-    }));
-
     let frame = 0;
+    const maxFrames = 420;
+
     const animate = () => {
       frame++;
       ctx.clearRect(0, 0, width, height);
 
-      // Background
-      ctx.fillStyle = '#000';
+      // Background: Solid Black
+      ctx.fillStyle = '#000000';
       ctx.fillRect(0, 0, width, height);
 
-      // Stars (glow and subtle drift)
-      for (let star of stars) {
-        star.x += star.dx;
-        star.y += star.dy;
-        if (star.x < 0 || star.x > width) star.dx *= -1;
-        if (star.y < 0 || star.y > height) star.dy *= -1;
+      // Central Purple Nebula Glow
+      const nebula = ctx.createRadialGradient(width / 2, height / 2, 0, width / 2, height / 2, 240);
+      nebula.addColorStop(0, 'rgba(128, 0, 255, 0.3)');
+      nebula.addColorStop(1, 'rgba(0, 0, 0, 0)');
+      ctx.fillStyle = nebula;
+      ctx.fillRect(width / 2 - 240, height / 2 - 240, 480, 480);
 
-        ctx.beginPath();
-        ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(255,255,255,0.7)';
-        ctx.shadowColor = 'rgba(255,255,255,0.2)';
-        ctx.shadowBlur = 6;
-        ctx.fill();
-      }
-
-      // Text reveal
+      // Text: Precise font and style matching
       const opacity = Math.min(1, frame / 60);
       ctx.save();
       ctx.translate(width / 2, height / 2);
-      const scale = 1 + Math.sin(frame / 60) * 0.005;
-      ctx.scale(scale, scale);
+      ctx.scale(1, 1);
       ctx.translate(-width / 2, -height / 2);
-      ctx.font = '600 58px Manrope, Open Sans, system-ui';
-      ctx.fillStyle = `rgba(230,230,230,${opacity})`;
+
+      ctx.font = '600 48px Manrope, Open Sans, sans-serif';
+      ctx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.shadowColor = 'rgba(255,255,255,0.12)';
-      ctx.shadowBlur = 20;
+      ctx.shadowColor = 'rgba(128, 0, 255, 0.35)';
+      ctx.shadowBlur = 50;
       ctx.fillText(text, width / 2, height / 2);
       ctx.restore();
 
-      if (frame < 420) requestAnimationFrame(animate);
+      // Fade to black for exit
+      if (frame > maxFrames - 60) {
+        const progress = (frame - (maxFrames - 60)) / 60;
+        const fade = 1 - progress;
+        ctx.fillStyle = `rgba(0, 0, 0, ${1 - fade})`;
+        ctx.fillRect(0, 0, width, height);
+      }
+
+      if (frame < maxFrames) requestAnimationFrame(animate);
       else onEnter();
     };
 
