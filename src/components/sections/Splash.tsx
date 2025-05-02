@@ -23,28 +23,14 @@ const Splash: React.FC<SplashProps> = ({ onEnter }) => {
     canvas.style.height = `${height}px`;
     ctx.scale(dpi, dpi);
 
-    // Stars
-    const stars = Array.from({ length: 100 }, () => ({
+    // Starfield — minimal glow and motion
+    const stars = Array.from({ length: 220 }, () => ({
       x: Math.random() * width,
       y: Math.random() * height,
-      r: Math.random() * 1.5 + 0.3,
-      d: Math.random() * 0.5 + 0.2,
+      r: Math.random() * 0.8 + 0.2,
+      dx: (Math.random() - 0.5) * 0.02,
+      dy: (Math.random() - 0.5) * 0.02,
     }));
-
-    // Comets
-    let comets: any[] = [];
-    const spawnComet = () => {
-      comets.push({
-        x: Math.random() * width,
-        y: -20,
-        vx: Math.random() * 0.8 + 0.5,
-        vy: Math.random() * 1.2 + 1.5,
-        alpha: 1,
-        life: 0,
-      });
-    };
-
-    setInterval(spawnComet, 2500);
 
     let frame = 0;
     const animate = () => {
@@ -55,54 +41,34 @@ const Splash: React.FC<SplashProps> = ({ onEnter }) => {
       ctx.fillStyle = '#000';
       ctx.fillRect(0, 0, width, height);
 
-      // Stars
+      // Stars (glow and subtle drift)
       for (let star of stars) {
-        star.y += star.d;
-        if (star.y > height) {
-          star.y = 0;
-          star.x = Math.random() * width;
-        }
+        star.x += star.dx;
+        star.y += star.dy;
+        if (star.x < 0 || star.x > width) star.dx *= -1;
+        if (star.y < 0 || star.y > height) star.dy *= -1;
+
         ctx.beginPath();
         ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
-        ctx.fillStyle = 'white';
+        ctx.fillStyle = 'rgba(255,255,255,0.7)';
+        ctx.shadowColor = 'rgba(255,255,255,0.2)';
+        ctx.shadowBlur = 6;
         ctx.fill();
       }
 
-      // Comets
-      comets.forEach((c) => {
-        c.x += c.vx;
-        c.y += c.vy;
-        c.life++;
-        c.alpha -= 0.005;
-        if (c.alpha > 0) {
-          const grad = ctx.createLinearGradient(c.x - 30, c.y - 30, c.x, c.y);
-          grad.addColorStop(0, `rgba(255,255,255,0)`);
-          grad.addColorStop(1, `rgba(255,255,255,${c.alpha})`);
-          ctx.strokeStyle = grad;
-          ctx.beginPath();
-          ctx.moveTo(c.x - 30, c.y - 30);
-          ctx.lineTo(c.x, c.y);
-          ctx.stroke();
-        }
-      });
-      comets = comets.filter(c => c.alpha > 0);
-
-      // Zoom in
-      const zoom = 1 + frame / 1400 * 0.05;
+      // Text reveal
+      const opacity = Math.min(1, frame / 60);
       ctx.save();
       ctx.translate(width / 2, height / 2);
-      ctx.scale(zoom, zoom);
+      const scale = 1 + Math.sin(frame / 60) * 0.005;
+      ctx.scale(scale, scale);
       ctx.translate(-width / 2, -height / 2);
-
-      // Text
-      ctx.font = '600 64px system-ui, -apple-system, BlinkMacSystemFont, sans-serif';
-      ctx.fillStyle = 'rgba(230,230,230,0.85)';
+      ctx.font = '600 58px Manrope, Open Sans, system-ui';
+      ctx.fillStyle = `rgba(230,230,230,${opacity})`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-
-      // Glow
-      ctx.shadowColor = 'rgba(200,200,255,0.1)';
-      ctx.shadowBlur = 25;
+      ctx.shadowColor = 'rgba(255,255,255,0.12)';
+      ctx.shadowBlur = 20;
       ctx.fillText(text, width / 2, height / 2);
       ctx.restore();
 
