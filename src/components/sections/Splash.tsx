@@ -25,7 +25,7 @@ const Splash: React.FC<SplashProps> = ({ onEnter }) => {
 
     ctx.clearRect(0, 0, width, height);
     ctx.fillStyle = '#ccc';
-    ctx.font = 'bold 48px sans-serif';
+    ctx.font = '600 52px "Manrope", "Open Sans", sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText(text, width / 2, height / 2);
@@ -66,7 +66,7 @@ const Splash: React.FC<SplashProps> = ({ onEnter }) => {
         }
         if (p.alpha > 0) {
           ctx.fillStyle = `rgba(200, 200, 200, ${p.alpha})`;
-          ctx.fillRect(p.x, p.y, 1.5, 1.5);
+          ctx.fillRect(p.x, p.y, 1.2, 1.2);
         }
       }
       if (frame < 300) requestAnimationFrame(animate);
