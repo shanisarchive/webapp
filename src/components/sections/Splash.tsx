@@ -25,10 +25,10 @@ const Splash: React.FC<SplashProps> = ({ onEnter }) => {
 
     ctx.clearRect(0, 0, width, height);
     ctx.fillStyle = '#ccc';
-    ctx.font = '600 52px "Manrope", "Open Sans", sans-serif';
+    ctx.font = '600 64px "Open Sans", "Helvetica Neue", sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText(text, width / 2, height / 2);
+    ctx.fillText(text, width / 2, height / 2 + 5); // fine-tuned vertical position
 
     const imageData = ctx.getImageData(0, 0, width, height);
     const particles: any[] = [];
@@ -46,7 +46,7 @@ const Splash: React.FC<SplashProps> = ({ onEnter }) => {
             vx: 0,
             vy: 0,
             alpha: 1,
-            delay: x / width * 100, // progressive dissolve from left to right
+            delay: x / width * 100,
           });
         }
       }
